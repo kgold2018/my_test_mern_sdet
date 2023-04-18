@@ -22,5 +22,4 @@ describe("Test address endpoints" , ()=> {
         console.log(token);
 
     })
-
 })
