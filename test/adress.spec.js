@@ -4,27 +4,16 @@ const chaiSubset =  require('chai-subset')
 chai.use(chaiSubset);
 const expect =  chai.expect;
 const superagent = require('superagent');
+const clientAddress = require("../src/client/address")
+const clienAuth = require("../src/client/auth")
+const {User} = require("../src/users/user");
 
 
 const baseUrl = "https://mern-ecommerce.sdet.school/api";
 //response.body.token = undefined;
 describe("Test address endpoints", ()=> {
     let token;
-    beforeEach(async () => {
-        //login as Olsen Y
-        const reqBody = {
-            email: "Olsen.Y@gmail.com",
-            password: "Password1"
-        }
-        try {
-            const response = await superagent.post(baseUrl+"/auth/login").send(reqBody)
-            token = response.body.token
-        } catch (error) {
-            console.log("catch?")
-            console.error(error.message);
-        }
-
-    })
+    // m test
 
     it("it should add address to user", async () =>{
        // console.log(token);
@@ -38,13 +27,19 @@ describe("Test address endpoints", ()=> {
             country: "USA",
             zipCode: zip,
         }
-        let response;
+        let response
+        const opts = {
+            token, //token : token
+            address : addressOpt
+        }
+        console.log(opts)
         try {
-         response = await superagent.post(baseUrl+"/address/add")
-          .set({
-                Authorization: token
-             })
-             .send(addressOpt)
+        // response = await superagent.post(baseUrl+"/address/add")
+            response = await clientAddress.addAddress(opts)
+          // .set({
+          //       Authorization: token
+          //    })
+          //    .send(addressOpt)
         } catch (err){
             console.log(err.message)
         }
@@ -64,4 +59,27 @@ describe("Test address endpoints", ()=> {
            }
        })
     });
-});
+
+    it("it should register user" , async()=> {
+        const opts = {
+            "email": "user1111111@email.com",
+            "firstName": "Harold",
+            "lastName": "Olseny",
+            "password": "Password1"
+        }
+        let response;
+        try {
+            response = await clienAuth.register(opts)
+        } catch (err){
+        console.log(err)
+        }
+        //console.log(response);
+    })
+    it.only("should create a User" , async() => {
+        //const user = await User.createUser()
+        const user = new User();
+        await user.register()
+        })
+       // console.log(user)
+
+    })
